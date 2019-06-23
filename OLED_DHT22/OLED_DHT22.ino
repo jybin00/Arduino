@@ -12,6 +12,7 @@ float HeatIndex = 0;
 void setup() {
     dht.begin(); // DHT22 센서의 사용시작을 정의해줍니다.
     pinMode(2,INPUT);
+    Serial.begin(9600);
 }
    
 void loop() {
