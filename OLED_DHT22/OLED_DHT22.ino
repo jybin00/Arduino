@@ -1,4 +1,4 @@
-#include "DHT.h" // DHT-22 센서를 사용하기 위한 라이브러리를 불러온다
+#include "DHT.h"    // DHT-22 센서를 사용하기 위한 라이브러리를 불러온다
 #include "U8glib.h" // 라이브러리 선언
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE); // oled 모델명에 맞는 함수 선언
 
@@ -17,20 +17,32 @@ void loop() {
     u8g.firstPage(); // 첫번째 페이지
     do{
         u8g.setFont(u8g_font_unifont); // OLED 폰트 설정
-        u8g.setPrintPos(8,15); // 프린트할 글자 위치 설정
-        u8g.print("JYB"); // 글자 프린트
-        u8g.drawStr(0,32, "Temperature:"); // 온도 글자 프린트
-        u8g.drawStr(0,43, "Humiditiy:"); // 습도 글자 프린트
-        u8g.drawStr(0,54, "HeatIndex:"); // 체감 온도 프린트
+        u8g.setPrintPos(8,15);         // 프린트할 글자 위치 설정
+        u8g.print("JYB");              // 글자 프린트
         u8g.drawEllipse(20,10,20,10,U8G_DRAW_ALL); // 타원 그리기 , x,y,rx,ry,옵션
-    }while(u8g.nextPage()); // 다음 페이지가 계속 나오면 (==1 이면)
+        
+        u8g.drawStr(0,32, "Temperature:"); // 온도 글자 프린트
+        u8g.drawStr(0,43, "Humiditiy:");   // 습도 글자 프린트
+        u8g.drawStr(0,54, "HeatIndex:");   // 체감 온도 프린트
+
+        u8g.setPrintPos(64,32); // 온도값 출력 위치 설정
+        u8g.print(Temperature); // 온도값 출력
+
+        u8g.setPrintPos(64,43); // 습도값 출력 위치 설정
+        u8g.print(Humidity);    // 출력값 출력
+
+        u8g.setPrintPos(64,54); // 체감 온도 출력 위치 설정
+        u8g.print(HeatIndex);   // 체감 온도 출력
+        
+    }while(u8g.nextPage());     // 다음 페이지가 계속 나오면 (==1 이면)
 }
 
 void loop2() {
-    delay(2000); // 측정시간을 위한 2초의 딜레이
+    delay(2000);                   // 측정시간을 위한 2초의 딜레이
     Humidity = dht.readHumidity(); // 습도값을 읽어서 Humidity 변수에 넣는다.
     Temperature = dht.readTemperature(); // 온도값을 읽어서 Temperature 변수에 넣는다.
     HeatIndex = dht.computeHeatIndex(Temperature,Humidity,false); 
+    //함수 원형 : 
     //float DHT::computeHeatIndex(float temperature, float percentHumidity, bool isFahrenheit)
 }
 
