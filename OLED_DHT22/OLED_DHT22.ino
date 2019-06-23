@@ -4,10 +4,13 @@ U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE); // oled 모델명에 맞는 함수 
 
 DHT dht(2,DHT22); // 2번 핀에서 데이터가 들어오고 센서는 DHT22센서를 사용한다고 정의함.
                   // 참고로 DHT는 라이브러리에서 정의한 거라 그대로 써야됨. 
+
+float Humidity = 0;
+float Temperature = 0;
+float HeatIndex = 0;
    
 void setup() {
-    Serial.begin(9600); // 시리얼 통신 시작.
-    dht.begin(); // DHT22 센서의 사용시작을 정의해줍니다
+    dht.begin(); // DHT22 센서의 사용시작을 정의해줍니다.
 }
    
 void loop() {
@@ -24,6 +27,10 @@ void loop() {
 
 void loop2() {
     delay(2000); // 측정시간을 위한 2초의 딜레이
+    Humidity = dht.readHumidity(); // 습도값을 읽어서 Humidity 변수에 넣는다.
+    Temperature = dht.readTemperature(); // 온도값을 읽어서 Temperature 변수에 넣는다.
+    HeatIndex = dht.computeHeatIndex(Temperature,Humidity,false); 
+    //float DHT::computeHeatIndex(float temperature, float percentHumidity, bool isFahrenheit)
 }
 
 
