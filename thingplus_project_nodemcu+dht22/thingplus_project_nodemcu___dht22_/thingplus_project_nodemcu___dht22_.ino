@@ -1,3 +1,5 @@
+// 잠시 보류
+
 extern "C" 
 {
   #include "user_interface.h"
@@ -47,35 +49,30 @@ static void _wifiInit(void)
 {
 #define WIFI_MAX_RETRY 150
 
-  ESP.wdtDisable();
 	WiFi.mode(WIFI_STA);
 
-  if(!WiFi.getAutoConnect())
-  {
-  	WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);
   
-  	Serial.print("[INFO] WiFi connecting to ");
-  	Serial.println(ssid);
-  }
-
-  else
-  {
-    Serial.print("AutoConnect");
-  }
+  Serial.print("[INFO] WiFi connecting to ");
+  Serial.println(ssid);
+  
 
 	int retry = 0;
-	while (WiFi.status() != WL_CONNECTED) {
+	while (WiFi.status() != WL_CONNECTED) 
+	{
 		Serial.print(retry++);
 		Serial.print(".");
 		if (!(retry % 50))
 		  Serial.println();
-		if (retry == WIFI_MAX_RETRY) {
+		if (retry == WIFI_MAX_RETRY) 
+		{
 			Serial.println();
 			Serial.print("[ERR] WiFi connection failed. SSID:");
 			Serial.print(ssid);
 			Serial.print(" PASSWD:");
 			Serial.println(password);
-			while (1) {
+			while (1) 
+			{
 				yield();
 			}
 		}
@@ -176,7 +173,7 @@ void updateTemp()
 {
   float temp = dht.readTemperature();
   
-  //Thingplus.sensorStatusPublish(tempId, true, reportIntervalSec * 2);
+  Thingplus.sensorStatusPublish(tempId, true, reportIntervalSec * 2);
   Thingplus.valuePublish(tempId, temp);
 }
 
@@ -184,14 +181,14 @@ void updateHum()
 {
   float hum = dht.readHumidity();
 
-  //Thingplus.sensorStatusPublish(humiId, true, reportIntervalSec * 2);
+  Thingplus.sensorStatusPublish(humiId, true, reportIntervalSec * 2);
   Thingplus.valuePublish(humiId, hum);
 }
 
 void loop() 
 {
 	t.update();
-	//system_soft_wdt_feed();
+	system_soft_wdt_feed();
 
 	current = now();
 	if (current > nextReportInterval) 
