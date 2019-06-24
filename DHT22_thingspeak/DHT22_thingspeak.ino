@@ -1,29 +1,29 @@
-#include <DHT.h>
-#include <ESP8266WiFi.h>
+#include <DHT.h>          // DHT 헤더 포함
+#include <ESP8266WiFi.h>  // 와이파이 헤더 포함
  
-// replace with your channel's thingspeak API key, 
-String apiKey = "F5PKUBH5GIJ93EF5";
-const char* ssid = "Up to the SKY";
-const char* password = "1402036768";
+String apiKey = "F5PKUBH5GIJ93EF5";  // Thingspeak apikey
+const char* ssid = "Up to the SKY";  // 와이파이 ssid (이름
+const char* password = "1402036768"; // 와이파이 비밀번호
  
-const char* server = "api.thingspeak.com";
-#define DHTPIN D3 // D2 pin on Nodemcu
+const char* server = "api.thingspeak.com"; // 서버 이름
+#define DHTPIN D3                          // Nodemcu 3번 핀
  
-DHT dht(DHTPIN, DHT22);
-WiFiClient client;
+DHT dht(DHTPIN, DHT22); // DHT 22를 사용한다고 선언
+WiFiClient client;      // 이건 무슨 함수일까.
 
 void setup() { 
-  pinMode(DHTPIN,INPUT);               
-  Serial.begin(115200);
-  delay(10);
-  dht.begin();
+  pinMode(DHTPIN,INPUT);         // DHT 핀 모드를 인풋 모드로 설정
+  Serial.begin(115200);          // 시리얼 통신 속도 설정      
+  delay(10);                     // 딜레이 10ms
+  dht.begin();                   // dht 시작!
   
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);    // 아까는 ssid가 const char* 아니고 char*이라더니 
+                                 // 여기서는 왜 되는거야! 참고로 와이파이 시작하는 함수
  
+  Serial.println();              // 줄바꾸기
   Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  Serial.print("Connecting to ");// connecting to 출력
+  Serial.println(ssid);          // ssid 출력
    
   WiFi.begin(ssid, password);
    
