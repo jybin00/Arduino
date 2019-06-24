@@ -1,3 +1,5 @@
+// AT 커멘드로 제어 안하고 wifi 접속
+
 #include "ESP8266WiFi.h" // wifi 라이브러리 호출
 
 const char* ssid = "Up to the SKY"; // 우리집 와이파이 이름
