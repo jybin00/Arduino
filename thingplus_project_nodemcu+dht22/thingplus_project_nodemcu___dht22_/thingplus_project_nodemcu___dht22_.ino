@@ -21,7 +21,7 @@ const char *ledId =     "led-ecfabc0820b4-0";
 const char *tempId =    "temperature-ecfabc0820b4-0";	      
 //////////////////////////////////////////////////////////////////
 
-int LED_GPIO = D2;            //LED 신호 입력 
+int LED_GPIO = D2;            //LED 신호 입력 핀 설
 int DHT_GPIO = D1;
 int reportIntervalSec = 60;
 
@@ -173,13 +173,14 @@ void updateHum()
   Thingplus.valuePublish(humiId, hum);
 }
 
-void loop() {
+void loop() 
+{
 	t.update();
 	system_soft_wdt_feed();
-	Thingplus.loop();
 
 	current = now();
-	if (current > nextReportInterval) {
+	if (current > nextReportInterval) 
+	{
 		Thingplus.gatewayStatusPublish(true, reportIntervalSec * 3);
 		Thingplus.sensorStatusPublish(ledId, true, reportIntervalSec * 3);
 		nextReportInterval = current + reportIntervalSec;
@@ -187,4 +188,5 @@ void loop() {
    updateTemp();
    updateHum();
 	}
+  Thingplus.loop();
 }
