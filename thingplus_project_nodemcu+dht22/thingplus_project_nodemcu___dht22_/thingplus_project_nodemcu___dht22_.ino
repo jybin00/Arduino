@@ -21,8 +21,8 @@ const char *ledId =     "led-ecfabc0820b4-0";
 const char *tempId =    "temperature-ecfabc0820b4-0";	      
 //////////////////////////////////////////////////////////////////
 
-int LED_GPIO = 2;            //LED 신호 입력 
-int DHT_GPIO = 1;
+int LED_GPIO = D2;            //LED 신호 입력 
+int DHT_GPIO = D1;
 int reportIntervalSec = 60;
 
 Timer t;
@@ -32,7 +32,7 @@ int ledBlinkTimer = 0;
 
 static WiFiClient wifiClient;
 
-DHT dht(DHT_GPIO,DHT22,25);
+DHT dht(DHT_GPIO,DHT22);
 
 static void _serialInit(void)
 {
@@ -161,16 +161,16 @@ void updateTemp()
 {
   float temp = dht.readTemperature();
   
-  Thingplus.sensorStatusPublish(tempId, true, reportIntervalSec * 2);
-  Thingplus.valuePublish(tempId, (char)temp);
+  //Thingplus.sensorStatusPublish(tempId, true, reportIntervalSec * 2);
+  Thingplus.valuePublish(tempId, temp);
 }
 
 void updateHum()
 {
   float hum = dht.readHumidity();
 
-  Thingplus.sensorStatusPublish(humiId, true, reportIntervalSec * 2);
-  Thingplus.valuePublish(humiId, (char)hum);
+  //Thingplus.sensorStatusPublish(humiId, true, reportIntervalSec * 2);
+  Thingplus.valuePublish(humiId, hum);
 }
 
 void loop() {
