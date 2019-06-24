@@ -23,8 +23,8 @@ const char *ledId =     "led-ecfabc0820b4-0";
 const char *tempId =    "temperature-ecfabc0820b4-0";	      
 //////////////////////////////////////////////////////////////////
 
-int LED_GPIO = 7;            //LED 신호 입력 핀 설
-int DHT_GPIO = 5;
+int LED_GPIO = D7;            //LED 신호 입력 핀 설
+int DHT_GPIO = D5;
 int reportIntervalSec = 60;
 
 Timer t;
