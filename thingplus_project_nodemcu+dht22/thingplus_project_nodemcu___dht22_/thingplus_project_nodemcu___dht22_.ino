@@ -24,7 +24,7 @@ const char *tempId =    "temperature-ecfabc0820b4-0";
 //////////////////////////////////////////////////////////////////
 
 int LED_GPIO = 7;            //LED 신호 입력 핀 설
-int DHT_GPIO = 6;
+int DHT_GPIO = 5;
 int reportIntervalSec = 60;
 
 Timer t;
@@ -47,6 +47,7 @@ static void _wifiInit(void)
 {
 #define WIFI_MAX_RETRY 150
 
+  ESP.wdtDisable();
 	WiFi.mode(WIFI_STA);
 
   if(!WiFi.getAutoConnect())
