@@ -13,16 +13,16 @@ extern "C" {
 
 
 //////////////////////////////////////////////////////////////////
-const char *ssid = "Up to the SKY";					                              	//FIXME
-const char *password = "1402036768";			                            		//FIXME
-const char *apikey = "x107do5ze2eLpg0oDw2trDwk2as=";  	//FIXME APIKEY
-const char *humiId = "percent-ecfabc0820b4-0";
-const char *ledId = "led-ecfabc0820b4-0";		                  	//FIXME LED ID
-const char *tempId = "temperature-ecfabc0820b4-0";	      //FIXME TEMPERATURE ID
+const char *ssid =      "Up to the SKY";					                              	
+const char *password =  "1402036768";			                            		
+const char *apikey =    "x107do5ze2eLpg0oDw2trDwk2as=";  	
+const char *humiId =    "percent-ecfabc0820b4-0";
+const char *ledId =     "led-ecfabc0820b4-0";		                  	
+const char *tempId =    "temperature-ecfabc0820b4-0";	      
 //////////////////////////////////////////////////////////////////
 
-int LED_GPIO = D2;            //LED 신호 입력 
-int DHT_GPIO = D1;
+int LED_GPIO = 2;            //LED 신호 입력 
+int DHT_GPIO = 1;
 int reportIntervalSec = 60;
 
 Timer t;
@@ -32,7 +32,7 @@ int ledBlinkTimer = 0;
 
 static WiFiClient wifiClient;
 
-DHT dht(DHT_GPIO,DHT22);
+DHT dht(DHT_GPIO,DHT22,25);
 
 static void _serialInit(void)
 {
