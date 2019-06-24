@@ -3,7 +3,7 @@
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE); // oled 모델명에 맞는 함수 선언
    
 void setup() {
-  Serial.begin(9600); // 시리얼 통신 시작.
+  Serial.begin(9600); // 시리얼 통신 시작. 통신 속도는 9600!
 }
    
 void loop() {
