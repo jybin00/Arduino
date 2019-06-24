@@ -5,13 +5,14 @@ U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE); // oled 모델명에 맞는 함수 
 DHT dht(2,DHT22); // 2번 핀에서 데이터가 들어오고 센서는 DHT22센서를 사용한다고 정의함.
                   // 참고로 DHT는 라이브러리에서 정의한 거라 그대로 써야됨. 
 
-float Humidity = 0;
+float Humidity = 0;    // 변수 설정
 float Temperature = 0;
 float HeatIndex = 0;
    
 void setup() {
     dht.begin(); // DHT22 센서의 사용시작을 정의해줍니다.
     pinMode(2,INPUT);
+    Serial.begin(9600);
 }
    
 void loop() {
