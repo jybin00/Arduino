@@ -1,5 +1,6 @@
-extern "C" {
-#include "user_interface.h"
+extern "C" 
+{
+  #include "user_interface.h"
 }
 
 #include <Arduino.h>
@@ -14,15 +15,16 @@ extern "C" {
 
 //////////////////////////////////////////////////////////////////
 const char *ssid =      "Up to the SKY";					                              	
-const char *password =  "1402036768";			                            		
+const char *password =  "1402036768";			     
+                       		
 const char *apikey =    "x107do5ze2eLpg0oDw2trDwk2as=";  	
 const char *humiId =    "percent-ecfabc0820b4-0";
 const char *ledId =     "led-ecfabc0820b4-0";		                  	
 const char *tempId =    "temperature-ecfabc0820b4-0";	      
 //////////////////////////////////////////////////////////////////
 
-int LED_GPIO = D2;            //LED 신호 입력 핀 설
-int DHT_GPIO = D1;
+int LED_GPIO = 7;            //LED 신호 입력 핀 설
+int DHT_GPIO = 6;
 int reportIntervalSec = 60;
 
 Timer t;
@@ -46,10 +48,19 @@ static void _wifiInit(void)
 #define WIFI_MAX_RETRY 150
 
 	WiFi.mode(WIFI_STA);
-	WiFi.begin(ssid, password);
 
-	Serial.print("[INFO] WiFi connecting to ");
-	Serial.println(ssid);
+  if(!WiFi.getAutoConnect())
+  {
+  	WiFi.begin(ssid, password);
+  
+  	Serial.print("[INFO] WiFi connecting to ");
+  	Serial.println(ssid);
+  }
+
+  else
+  {
+    Serial.print("AutoConnect");
+  }
 
 	int retry = 0;
 	while (WiFi.status() != WL_CONNECTED) {
@@ -76,15 +87,18 @@ static void _wifiInit(void)
 	Serial.println(WiFi.localIP());
 }
 
-static void _gpioInit(void) {
+static void _gpioInit(void) 
+{
 	pinMode(LED_GPIO, OUTPUT);
 }
-static void _temphumiInit(void) {
+static void _temphumiInit(void) 
+{
   pinMode(DHT_GPIO, INPUT);
 }
 
 
-static void _ledOn(JsonObject& options) {
+static void _ledOn(JsonObject& options) 
+{
 	int duration = options.containsKey("duration") ? options["duration"] : 0;
 
 	digitalWrite(LED_GPIO, HIGH);
@@ -176,7 +190,7 @@ void updateHum()
 void loop() 
 {
 	t.update();
-	system_soft_wdt_feed();
+	//system_soft_wdt_feed();
 
 	current = now();
 	if (current > nextReportInterval) 
