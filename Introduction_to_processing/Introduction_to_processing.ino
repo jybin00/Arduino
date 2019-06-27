@@ -3,8 +3,8 @@
 #define DHTPIN 7 // DHT 센서 핀 번호 매크로로 지정
 
 DHT dht(DHTPIN,DHT11); // DHT 센서 객체 선언. 객체가 뭐지?
-float humi = 0; // 습도 변수
-float temp = 0; // 온도 변수
+int humi = 0; // 습도 변수
+int temp = 0; // 온도 변수
 
 void setup() 
 {
@@ -18,10 +18,13 @@ void loop()
 {
   humi = dht.readHumidity();    // 습도값 읽기
   temp = dht.readTemperature(); // 온도값 읽기
-  Serial.print("현재 온도 : ");
-  Serial.println(temp);
-  Serial.print("현재 습도 : ");
-  Serial.println(humi);
+  //Serial.print("현재 온도 : ");
+  Serial.print(temp);
+  Serial.print(" ");
+  Serial.print(humi);
+  Serial.println(" ."); // 데이터 end를 명확하게 하기 위해 추가
+  //Serial.print("현재 습도 : ");
+  //Serial.println(humi);
 
-  delay(2000);
+  delay(200);
 }
