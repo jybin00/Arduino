@@ -23,5 +23,5 @@ void loop()
   Serial.print("현재 습도 : ");
   Serial.println(humi);
 
-  delay(1000);
+  delay(2000);
 }

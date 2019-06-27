@@ -6,7 +6,7 @@ String myString = null;
 void setup()
 {
   printArray(Serial.list());
-  myPort = new Serial(this, "14201",9600);
+  myPort = new Serial(this,Serial.list()[1],9600);
 }
 
 void draw()
@@ -14,6 +14,9 @@ void draw()
   if(myPort.available() > 0)
   {
     myString = myPort.readString();
-    println(myString);
+    if(myString != null)
+    {
+      println(myString);
+    }
   }
 }
