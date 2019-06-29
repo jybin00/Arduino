@@ -8,13 +8,15 @@ int temp = 0;  // 온도 변수 선언 및 초기화
 
 void setup()
 {
+  size(1200,1000);
+  background(0);
   printArray(Serial.list());   // 이 함수를 입력하면 포트 값을 알아낼 수 있음.
   myPort = new Serial(this,Serial.list()[1],9600); // 시리얼 통신 시작 함수같은 거 (잘 모르겠음.)
 }
 
 void draw()  // 무언가 그리는 함수
 {
- 
+  drawLine();
 }
 
 
@@ -34,4 +36,17 @@ void serialEvent(Serial myPort)   // 시리얼을 통해서 데이터가 들어�
     {
       
     }
+}
+
+void drawLine()
+{
+ pushMatrix();
+ 
+ translate(width/2, height);
+ strokeWeight(4);
+ stroke(98, 245, 31);
+ 
+
+ 
+ popMatrix();
 }
