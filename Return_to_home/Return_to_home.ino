@@ -48,13 +48,13 @@ void setup() {
 
 }
 
-void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수
+void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수 
 {
   if(LeftMotorDir == FORWARD)
   {
-    if(LeftMotorStepIndex == 3)
+    if(LeftMotorStepIndex == 3) 
     {
-      LeftMotorStepIndex = 0;
+      LeftMotorStepIndex = 0; // 인덱스가 3이면 0으로 초기화
     }
     else 
     {
@@ -94,7 +94,7 @@ void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수
   }
 }
 
-void RightMotorStep()
+void RightMotorStep() // 오른쪽 모터 제어를 위한 함수
 {
   if(RightMotorDir == FORWARD)
   {
@@ -141,8 +141,8 @@ void RightMotorStep()
 }
 
 void loop() 
-{
-  if(millis() >= LeftMotorTimer + DEFAULT_SPEED)
+{ // 스피드로 설정한 시간이 지날 때마다 실행
+  if(millis() >= LeftMotorTimer + DEFAULT_SPEED)  
   {
     LeftMotorTimer = millis();
     LeftMotorStep();
