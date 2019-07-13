@@ -1,10 +1,11 @@
-// 핸즈 프로젝트 "집에 가고 싶어" RC카 코드
+// 핸즈 프로젝트 "집에 가고 싶어" RC카 code
 //
+// 작성자 : 승민,영준,하영,유빈
 //
 
 
-// 스피드 설정
-#define DEFAULT_SPEED 15  
+// 스피드 설정 0.2초 마다 1스텝씩 이동
+#define DEFAULT_SPEED 20 
 
 // 모터 방향 설정
 #define FORWARD 1
@@ -19,15 +20,15 @@ unsigned long LeftMotorTimer, RightMotorTimer, systemTimer;
 #define RightStep(a,b,c,d) digitalWrite(26,a); digitalWrite(27,b); digitalWrite(14,c); digitalWrite(12,d); 
 #define LeftStep(a,b,c,d) digitalWrite(19,a); digitalWrite(18,b); digitalWrite(4,c); digitalWrite(0,d);
 
-int LeftMotorDir, RightMotorDir;
-int LeftMotorStepIndex = 0;
-int RightMotorStepIndex = 0;
+int LeftMotorDir, RightMotorDir;  // 왼쪽 모터와 오른쪽 모터 방향 변수
+int LeftMotorStepIndex = 0;  // 왼쪽 모터의 스텝수 저장 변수
+int RightMotorStepIndex = 0; // 오른쪽 모터의 스텝수 저장 변수
 
-int Distance[3];
+int Distance[3];  // 거리 저장을 위한 배열
 
 void setup() {
 
-///// StepMoter init
+///// 스텝모터 초기 설정
   pinMode(26, OUTPUT);
   pinMode(27, OUTPUT);
   pinMode(14, OUTPUT);
@@ -39,7 +40,7 @@ void setup() {
   pinMode(0, OUTPUT);
 
   LeftMotorTimer = millis();
-  RightMotorTimer = millis() + 10;
+  RightMotorTimer = millis() + 10; // 제어용 타이머 충돌 방지 
   systemTimer = millis();
 
   LeftMotorDir = FORWARD;
@@ -47,7 +48,7 @@ void setup() {
 
 }
 
-void LeftMotorStep()
+void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수
 {
   if(LeftMotorDir == FORWARD)
   {
