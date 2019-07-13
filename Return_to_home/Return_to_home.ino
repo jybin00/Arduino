@@ -5,11 +5,11 @@
 
 #include <SSD1306Wire.h>
 
-SSD1306Wire display(0x3c, 21,22);
+SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소인가? // 21 == SDA 22 == SCL
 
 
 // 스피드 설정 0.15초 마다 1스텝씩 이동
-#define DEFAULT_SPEED 60
+#define DEFAULT_SPEED 15
 
 // 모터 방향 설정
 #define FORWARD 1
@@ -30,7 +30,9 @@ int LeftMotorStepIndex = 0;  // 왼쪽 모터 제어용 인덱스
 int RightMotorStepIndex = 0; // 오른쪽 모터 제어용 인덱스
 
 int LeftStepIndex = 0;  // 왼쪽 모터 스텝 저장용 변수
+char LSI = 0;
 int RightStepIndex = 0; // 오른쪽 모터 스텝 저장용 변수
+char RSI = 0;
 
 int Distance[3];  // 거리 저장을 위한 배열
 
@@ -39,7 +41,7 @@ void setup() {
 
   display.init();
   display.flipScreenVertically();
-  display.setFont(ArialMT_Plain_10);
+  display.setFont(Open_Sans_SemiBold_13);
 
 ///// 스텝모터 초기 설정
   pinMode(26, OUTPUT);
@@ -161,12 +163,8 @@ void drawFontFaceDemo() {
     // Font Demo1
     // create more fonts at http://oleddisplay.squix.ch/
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(ArialMT_Plain_10);
-    display.drawString(0, 0, "Hello world");
-    display.setFont(ArialMT_Plain_16);
-    display.drawString(0, 10, "Hello world");
-    display.setFont(ArialMT_Plain_24);
-    display.drawString(0, 26, "Hello world");
+    display.drawString(0, 13, "LeftStep : ");
+    display.drawString(70, 13, String(LeftStepIndex));
   // write the buffer to the display
   display.display();
 }
@@ -190,9 +188,7 @@ void loop()
   {
     systemTimer = millis();
     Serial.println(LeftStepIndex);
+    drawFontFaceDemo();
   }
-
-  drawFontFaceDemo();
-  delay(1000);
 
 }
