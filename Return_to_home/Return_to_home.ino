@@ -6,6 +6,7 @@
 #include <SSD1306Wire.h>  // 0.96 inch OLED 사용을 위한 라이브러리
 #include <math.h>         // 거리 및 각도 계산 함수
 
+
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
 
 
@@ -81,20 +82,22 @@ void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수
     if(LeftMotorStepIndex == 0) 
     {
       LeftMotorStepIndex = 3; // 인덱스가 3이면 0으로 초기화
-      LeftStepIndex++;
     }
     else 
     {
       LeftMotorStepIndex--;
-      LeftStepIndex++;
     }
   }
   else if(LeftMotorDir == BACKWARD)
   {
     if(LeftMotorStepIndex == 3)
+    {
       LeftMotorStepIndex = 0;
+    }
     else
+    {
       LeftMotorStepIndex++;
+    }
   }
   else
   {
@@ -123,20 +126,30 @@ void RightMotorStep() // 오른쪽 모터 제어를 위한 함수
   if(RightMotorDir == FORWARD) 
   {
     if(RightMotorStepIndex == 0)
+    {
       RightMotorStepIndex = 3;
+    }
     else
+    {
       RightMotorStepIndex--;
+    }
   }
   else if(RightMotorDir == BACKWARD) 
   {
     if(RightMotorStepIndex == 3)
+    {
       RightMotorStepIndex = 0;
+    }
     else
+    {
       RightMotorStepIndex++;
+    }
   }
   else
+  {
     RightStep(0,0,0,0);
     return;
+  }
     
   switch(RightMotorStepIndex) 
   {
