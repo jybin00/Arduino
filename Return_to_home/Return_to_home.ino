@@ -6,24 +6,15 @@
 #include <SSD1306Wire.h>  // 0.96 inch OLED 사용을 위한 라이브러리
 #include <math.h>         // 거리 및 각도 계산 함수
 
-////////////////////////////////////////////////////////////////
+//Bluetooth//////////////////////////////////////////////////
+#include "BluetoothSerial.h"
 
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
-#include <BLE2902.h>
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
 
-BLEServer *pServer = NULL;
-BLECharacteristic * pTxCharacteristic;
-bool deviceConnected = false;
-bool oldDeviceConnected = false;
-uint8_t txValue = 0;
-
-#define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E" // UART service UUID
-#define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
-#define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
-
-////////////////////////////////////////////////////////////////////////////////
+BluetoothSerial SerialBT; 
+///////////
 
 
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
@@ -39,8 +30,7 @@ SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 =
 #define RIGHT 4
 
 // 모터 제어를 위한 타이머 설정
-unsigned long LeftMotorTimer, RightMotorTimer; 
-unsigned long systemTimer, BLETimer;// 시스템 타이머는 OLED 업데이트 용도
+unsigned long LeftMotorTimer, RightMotorTimer, systemTimer;  // 시스템 타이머는 OLED 업데이트 용도
 
 // 스텝 모터 작동을 위한 함수 설정
 #define RightStep(a,b,c,d) digitalWrite(26,a); digitalWrite(27,b); digitalWrite(14,c); digitalWrite(12,d); // blue,green, red, black
@@ -64,89 +54,14 @@ int Distance = 0; // 거리 저장용 변수
 float radian = 0; // 각 계산을 위한 변수
 float degree = 0;
 
-void RC_Car_Pos();
-void distance();
-void Return_Angle();
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
-    };
-
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
-    }
-};
-
-class MyCallbacks: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-      std::string rxValue = pCharacteristic->getValue();
-
-      if (rxValue.length() > 0) {
-        Serial.println("*********");
-        Serial.print("Received Value: ");
-        for (int i = 0; i < rxValue.length(); i++)
-          Serial.print(rxValue[i]);
-            if(rxValue[0] != 0)
-            {
-               RC_Move_Order = rxValue[0];
-               RC_Car_Pos();
-               distance();
-               Return_Angle();
-            }
-
-        Serial.println();
-        Serial.println("*********");
-      }
-    }
-};
-
-//////////////////////////////////////////////////////////////////
-
-
 void setup() 
 {
   // 시리얼 통신 시작 
   Serial.begin(115200);
-
-  ////////////////////////////////////////////////////////////////////////////
-
-  // Create the BLE Device
-  BLEDevice::init("HANDS");
-
-  // Create the BLE Server
-  pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new MyServerCallbacks());
-
-  // Create the BLE Service
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-
-  // Create a BLE Characteristic
-  pTxCharacteristic = pService->createCharacteristic(
-                    CHARACTERISTIC_UUID_TX,
-                    BLECharacteristic::PROPERTY_NOTIFY
-                  );
-                      
-  pTxCharacteristic->addDescriptor(new BLE2902());
-
-  BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID_RX,
-                      BLECharacteristic::PROPERTY_WRITE
-                    );
-
-  pRxCharacteristic->setCallbacks(new MyCallbacks());
-
-  // Start the service
-  pService->start();
-
-  // Start advertising
-  pServer->getAdvertising()->start();
-  Serial.println("Waiting a client connection to notify...");
-
-  ////////////////////////////////////////////////////////////////////
+  
+  //bluetooth
+  SerialBT.begin("ESP32test"); //Bluetooth device name
+  Serial.println("The device started, now you can pair it with bluetooth!");
 
   // OLED 함수
   display.init(); // OLED 초기화
@@ -167,7 +82,6 @@ void setup()
   LeftMotorTimer = millis();
   RightMotorTimer = millis() + 10; // 제어용 타이머 충돌 방지 
   systemTimer = millis();
-  BLETimer = millis();
 
   // 초기 모터 방향은 forward
   LeftMotorDir = FORWARD;
@@ -180,30 +94,23 @@ void LeftMotorStep() // 왼쪽 모터 동작을 위한 함수
   if(LeftMotorDir == FORWARD) 
   {
     if(LeftMotorStepIndex == 0) 
-    {
       LeftMotorStepIndex = 3; // 인덱스가 3이면 0으로 초기화
-    }
     else 
-    {
       LeftMotorStepIndex--;
-    }
   }
   else if(LeftMotorDir == BACKWARD)
   {
     if(LeftMotorStepIndex == 3)
-    {
       LeftMotorStepIndex = 0;
-    }
     else
-    {
       LeftMotorStepIndex++;
-    }
   }
   else
   {
     LeftStep(0,0,0,0);
     return;
   }
+  
   switch(LeftMotorStepIndex)
   {
     case 0:
@@ -439,13 +346,12 @@ void Return_Angle()
 }
 
 
-
-
 void loop() 
 { 
-  if(Serial.available()) 
+  if(SerialBT.available()) 
   {
-    RC_Move_Order = Serial.parseInt();
+    Serial.println(SerialBT.read()); 
+    RC_Move_Order = SerialBT.parseInt();
     RC_Car_Pos();
     distance();
     Return_Angle();
@@ -458,6 +364,8 @@ void loop()
     Serial.print("Angle : ");
     Serial.println(degree);
   }
+
+  if(SerialBT.available()) Serial.write(SerialBT.read());
   
   if(millis() >= systemTimer + 1000)
   {
@@ -465,22 +373,6 @@ void loop()
     //Serial.println(LeftStepIndex);
     RC_Car_Info();
   }
-
-  if(millis() >= BLETimer + 10)
-  {
-    // disconnecting
-    if (!deviceConnected && oldDeviceConnected) {
-        delay(500); // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
-        oldDeviceConnected = deviceConnected;
-    }
-
-    // connecting
-    if (deviceConnected && !oldDeviceConnected) {
-    // do stuff here on connecting
-        oldDeviceConnected = deviceConnected;
-    }
-  }
+  delay(20); 
 
 }
