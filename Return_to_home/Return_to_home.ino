@@ -23,37 +23,8 @@ uint8_t txValue = 0;
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
-class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
-    };
+////////////////////////////////////////////////////////////////////////////////
 
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
-    }
-};
-
-class MyCallbacks: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-      std::string rxValue = pCharacteristic->getValue();
-
-      if (rxValue.length() > 0) {
-        Serial.println("*********");
-        Serial.print("Received Value: ");
-        for (int i = 0; i < rxValue.length(); i++)
-          Serial.print(rxValue[i]);
-            if(rxValue[0] == '1')
-            {
-               Serial.println("Hello");
-            }
-
-        Serial.println();
-        Serial.println("*********");
-      }
-    }
-};
-
-//////////////////////////////////////////////////////////////////
 
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
 
@@ -92,6 +63,49 @@ int Y_Pos = 0;    // y위치 저장용 변수
 int Distance = 0; // 거리 저장용 변수
 float radian = 0; // 각 계산을 위한 변수
 float degree = 0;
+
+void RC_Car_Pos();
+void distance();
+void Return_Angle();
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+class MyServerCallbacks: public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) {
+      deviceConnected = true;
+    };
+
+    void onDisconnect(BLEServer* pServer) {
+      deviceConnected = false;
+    }
+};
+
+class MyCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+      std::string rxValue = pCharacteristic->getValue();
+
+      if (rxValue.length() > 0) {
+        Serial.println("*********");
+        Serial.print("Received Value: ");
+        for (int i = 0; i < rxValue.length(); i++)
+          Serial.print(rxValue[i]);
+            if(rxValue[0] != 0)
+            {
+               RC_Move_Order = rxValue[0];
+               RC_Car_Pos();
+               distance();
+               Return_Angle();
+            }
+
+        Serial.println();
+        Serial.println("*********");
+      }
+    }
+};
+
+//////////////////////////////////////////////////////////////////
+
 
 void setup() 
 {
@@ -423,6 +437,8 @@ void Return_Angle()
   radian = atan2(Y_Pos,X_Pos);
   degree = (57.29578*radian); 
 }
+
+
 
 
 void loop() 
