@@ -377,13 +377,13 @@ void Return_Home()
   int i = 0; int j = RC_Car_Dir - 1;
   if(X_Pos>0) {
     if(Y_Pos>0) i = 0;
-    else i = 2;
+    else i = 3;
   } else {
     if(Y_Pos>0) i= 1; 
-    else i = 3; 
+    else i = 2; 
   }
 
-  int acs = (int) (degree/0.9);
+  int acs = (int) (numAngle[j][i]*4/3);
   
   //각도 바꾸기
   RightMotorDir = BACKWARD;
@@ -397,7 +397,6 @@ void Return_Home()
   }
   
   //거리 계산 및 거리 스텝 수
-  distance();
   RightMotorDir = FORWARD;
   LeftMotorDir = FORWARD;
 
