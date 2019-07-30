@@ -30,7 +30,7 @@ SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 =
 #define RIGHT 3
 
 // 모터 제어를 위한 타이머 설정
-unsigned long LeftMotorTimer, RightMotorTimer, systemTimer;  // 시스템 타이머는 OLED 업데이트 용도
+unsigned long LeftMotorTimer, RightMotorTimer, systemTimer, systemTimer2;  // 시스템 타이머는 OLED 업데이트 용도
 
 // 스텝 모터 작동을 위한 함수 설정
 #define RightStep(a,b,c,d) digitalWrite(26,a); digitalWrite(27,b); digitalWrite(14,c); digitalWrite(12,d); // blue,green, red, black
@@ -53,6 +53,8 @@ int Y_Pos = 0;    // y위치 저장용 변수
 int Distance = 0; // 거리 저장용 변수
 float radian = 0; // 각 계산을 위한 변수
 float degree = 0;
+
+void Return_Home();
 
 void setup() 
 {
@@ -82,6 +84,7 @@ void setup()
   LeftMotorTimer = millis();
   RightMotorTimer = millis() + 10; // 제어용 타이머 충돌 방지 
   systemTimer = millis();
+  systemTimer2 = millis() + 300;
 
   // 초기 모터 방향은 forward
   LeftMotorDir = FORWARD;
@@ -265,6 +268,9 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
           RC_Car_Dir = 3;
           Right();
           break; 
+        case 5: // return to the home
+          Return_Home();
+          break;
       }
     break;
           
@@ -287,9 +293,12 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
         case 3: //Right
           RC_Car_Dir = 2;
           Right();
+          break;
+        case 5: // return to the home
+          Return_Home();
           break; 
       }
-      break;
+    break;
 
     case 2: // Left
       switch(RC_Move_Order)
@@ -310,8 +319,11 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
           RC_Car_Dir = 1;
           Right();
           break; 
+        case 5: // return to the home
+          Return_Home();
+          break;
       }
-      break;
+    break;
 
     case 3: // Right
       switch(RC_Move_Order)
@@ -332,8 +344,11 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
           RC_Car_Dir = 4;
           Right();  
           break; 
+        case 5: // return to the home
+          Return_Home();
+          break;
       }
-      break; 
+    break;
    } 
 }
 
@@ -346,6 +361,52 @@ void Return_Angle()
 {
   radian = atan2(Y_Pos,X_Pos);
   degree = (57.29578*radian); 
+}
+
+void Return_Home()
+{
+  //각도 계산
+  float numAngle[4][4] = {
+    {270-degree,  90+degree,  90-degree, 270+degree},
+    {360-degree, 180+degree, 180-degree,     degree},
+    {180-degree,     degree, 360-degree, 180+degree}, 
+    { 90-degree, 270+degree, 270-degree,  90+degree}
+  };
+  
+  //각도 바꾸는 스텝 수
+  int i = 0; int j = RC_Car_Dir - 1;
+  if(X_Pos>0) {
+    if(Y_Pos>0) i = 0;
+    else i = 2;
+  } else {
+    if(Y_Pos>0) i= 1; 
+    else i = 3; 
+  }
+
+  int acs = (int) (degree/0.9);
+  
+  //각도 바꾸기
+  RightMotorDir = BACKWARD;
+  LeftMotorDir = FORWARD;
+
+  for(int i=0; i<=acs; i++) 
+  {
+    LeftMotorStep();
+    RightMotorStep();
+    delay(DEFAULT_SPEED);
+  }
+  
+  //거리 계산 및 거리 스텝 수
+  distance();
+  RightMotorDir = FORWARD;
+  LeftMotorDir = FORWARD;
+
+  for(int j=0; j<=(int) Distance; j++) 
+  {
+    LeftMotorStep();
+    RightMotorStep();
+    delay(DEFAULT_SPEED);
+  }
 }
 
 
@@ -367,18 +428,11 @@ void loop()
     Serial.print("Angle : ");
     Serial.println(degree);
   }
-
-  if(SerialBT.available()) Serial.write(SerialBT.read());
   
   if(millis() >= systemTimer + 1000)
   {
     systemTimer = millis();
-    //Serial.println(LeftStepIndex);
     RC_Car_Info();
-    SerialBT.print(X_Pos);
-    SerialBT.print(Y_Pos);
-    SerialBT.print(Distance);
-    SerialBT.print(degree);
   }
   delay(20); 
 
