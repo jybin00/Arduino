@@ -195,7 +195,7 @@ void Forward()
   RightMotorDir = FORWARD;
   LeftMotorDir = FORWARD;
 
-  for(int i=0; i<=200; i++) 
+  for(int i=0; i<=300; i++) 
   {
     LeftMotorStep();
     RightMotorStep();
@@ -208,7 +208,7 @@ void Backward()
   RightMotorDir = BACKWARD;
   LeftMotorDir = BACKWARD;
 
-  for(int i=0; i<=200; i++) 
+  for(int i=0; i<=300; i++) 
   {
     LeftMotorStep();
     RightMotorStep();
@@ -221,7 +221,7 @@ void Left()
   RightMotorDir = FORWARD;
   LeftMotorDir = BACKWARD;
 
-  for(int i=0; i<=120; i++) 
+  for(int i=0; i<=109; i++) 
   {
     LeftMotorStep();
     RightMotorStep();
@@ -234,7 +234,7 @@ void Right()
   RightMotorDir = BACKWARD;
   LeftMotorDir = FORWARD;
 
-  for(int i=0; i<=120; i++) 
+  for(int i=0; i<=109; i++) 
   {
     LeftMotorStep();
     RightMotorStep();
@@ -250,34 +250,56 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
       switch(RC_Move_Order)
       {
         case 1: //Forward
-          Y_Pos += 200;
+          Y_Pos += 300;
           Forward();
           break;
         case 4: //Backward
-          Y_Pos -= 200;
+          Y_Pos -= 300;
           Backward();
           break;
         case 2: //Left
-          RC_Car_Dir = 3;
+          RC_Car_Dir = 2;
           Left();
           break;
         case 3: //Right
-          RC_Car_Dir = 4;
+          RC_Car_Dir = 3;
           Right();
           break; 
       }
     break;
           
-    case 2: // Backward
+    case 4: // Backward
     
       switch(RC_Move_Order) 
       {
         case 1: //Forward
-          Y_Pos -= 200;
+          Y_Pos -= 300;
           Forward();
           break;
         case 4: //Backward
-          Y_Pos += 200;
+          Y_Pos += 300;
+          Backward();
+          break;
+        case 2: //Left
+          RC_Car_Dir = 3;
+          Left();
+          break;
+        case 3: //Right
+          RC_Car_Dir = 2;
+          Right();
+          break; 
+      }
+      break;
+
+    case 2: // Left
+      switch(RC_Move_Order)
+      {
+        case 1: //Forward
+          X_Pos -= 300;
+          Forward();
+          break;
+        case 4: //Backward
+          X_Pos += 300;
           Backward();
           break;
         case 2: //Left
@@ -285,43 +307,21 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
           Left();
           break;
         case 3: //Right
-          RC_Car_Dir = 3;
-          Right();
-          break; 
-      }
-      break;
-
-    case 3: // Left
-      switch(RC_Move_Order)
-      {
-        case 1: //Forward
-          X_Pos -= 200;
-          Forward();
-          break;
-        case 4: //Backward
-          X_Pos += 200;
-          Backward();
-          break;
-        case 2: //Left
-          RC_Car_Dir = 2;
-          Left();
-          break;
-        case 3: //Right
           RC_Car_Dir = 1;
           Right();
           break; 
       }
       break;
 
-    case 4: // Right
+    case 3: // Right
       switch(RC_Move_Order)
       {
         case 1: //Forward
-          X_Pos += 200;
+          X_Pos += 300;
           Forward();
           break;
         case 4: //Backward
-          X_Pos -= 200;
+          X_Pos -= 300;
           Backward();
           break;
         case 2: //Left
@@ -329,7 +329,7 @@ void RC_Car_Pos() // RC car가 움직일 때 위치 저장을 위한 함수 ( �
           Left();
           break;
         case 3: //Right
-          RC_Car_Dir = 2;
+          RC_Car_Dir = 4;
           Right();  
           break; 
       }
@@ -353,11 +353,7 @@ void loop()
 { 
   if(SerialBT.available()) 
   {
-    Serial.println(SerialBT.read()); 
-    SerialBT.write(X_Pos);
-    SerialBT.write(Y_Pos);
-    SerialBT.write(Distance);
-    SerialBT.write(degree);
+    Serial.println(SerialBT.read());
     RC_Move_Order = SerialBT.parseInt();
     RC_Car_Pos();
     distance();
@@ -379,6 +375,10 @@ void loop()
     systemTimer = millis();
     //Serial.println(LeftStepIndex);
     RC_Car_Info();
+    SerialBT.print(X_Pos);
+    SerialBT.print(Y_Pos);
+    SerialBT.print(Distance);
+    SerialBT.print(degree);
   }
   delay(20); 
 
