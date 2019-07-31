@@ -20,8 +20,8 @@ BluetoothSerial SerialBT;
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
 
 
-// 스피드 설정 0.09초 마다 1스텝씩 이동
-#define DEFAULT_SPEED 9
+// 스피드 설정 0.004초 마다 1스텝씩 이동
+#define DEFAULT_SPEED 4000
 
 // 모터 방향 설정
 #define FORWARD 1
@@ -82,7 +82,7 @@ void setup()
   pinMode(0, OUTPUT);
 
   LeftMotorTimer = millis();
-  RightMotorTimer = millis() + 10; // 제어용 타이머 충돌 방지 
+  RightMotorTimer = millis() + 1; // 제어용 타이머 충돌 방지 
   systemTimer = millis();
   systemTimer2 = millis() + 300;
 
@@ -202,7 +202,7 @@ void Forward()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
 }
 
@@ -215,7 +215,7 @@ void Backward()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
 }
 
@@ -228,7 +228,7 @@ void Left()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
 }
 
@@ -241,7 +241,7 @@ void Right()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
 }
 
@@ -367,23 +367,23 @@ void Return_Home()
 {
   //각도 계산
   float numAngle[4][4] = {
-    {270-degree,  90+degree,  90-degree, 270+degree},
-    {360-degree, 180+degree, 180-degree,     degree},
-    {180-degree,     degree, 360-degree, 180+degree}, 
-    { 90-degree, 270+degree, 270-degree,  90+degree}
+    {270-degree,     degree, 180-degree, 360-degree},
+    {360-degree,  90+degree, 270-degree,  90-degree},
+    {180-degree, -90+degree, 450-degree, 270-degree}, 
+    { 90-degree, 180+degree, 360-degree, 180-degree}
   };
   
   //각도 바꾸는 스텝 수
   int i = 0; int j = RC_Car_Dir - 1;
-  if(X_Pos>0) {
-    if(Y_Pos>0) i = 0;
+  if(X_Pos>=0) {
+    if(Y_Pos>=0) i = 0;
     else i = 3;
   } else {
-    if(Y_Pos>0) i= 1; 
+    if(Y_Pos>=0) i= 1; 
     else i = 2; 
   }
 
-  int acs = (int) (numAngle[j][i]*4/3);
+  int acs = (int) (numAngle[j][i]*4/3*0.908);
   
   //각도 바꾸기
   RightMotorDir = BACKWARD;
@@ -393,8 +393,10 @@ void Return_Home()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
+
+  delay(20);
   
   //거리 계산 및 거리 스텝 수
   RightMotorDir = FORWARD;
@@ -404,8 +406,14 @@ void Return_Home()
   {
     LeftMotorStep();
     RightMotorStep();
-    delay(DEFAULT_SPEED);
+    delayMicroseconds(DEFAULT_SPEED);
   }
+
+  
+  X_Pos = 0;
+  Y_Pos = 0; 
+  Distance = 0;
+  degree = 0;
 }
 
 
@@ -418,6 +426,7 @@ void loop()
     RC_Car_Pos();
     distance();
     Return_Angle();
+    /*
     Serial.print("X_Pos : ");
     Serial.println(X_Pos);
     Serial.print("Y_Pos : ");
@@ -425,7 +434,7 @@ void loop()
     Serial.print("Distance : ");
     Serial.println(Distance);
     Serial.print("Angle : ");
-    Serial.println(degree);
+    Serial.println(degree);*/
   }
   
   if(millis() >= systemTimer + 1000)
@@ -433,6 +442,6 @@ void loop()
     systemTimer = millis();
     RC_Car_Info();
   }
-  delay(20); 
+  delay(100); 
 
 }
