@@ -20,8 +20,8 @@ BluetoothSerial SerialBT;
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
 
 
-// 스피드 설정 0.0049초 마다 1스텝씩 이동
-#define DEFAULT_SPEED 4900
+// 스피드 설정 0.0045초 마다 1스텝씩 이동
+#define DEFAULT_SPEED 4500
 
 // 모터 방향 설정
 #define FORWARD 1
@@ -215,7 +215,7 @@ void Left()
   RightMotorDir = FORWARD;
   LeftMotorDir = BACKWARD;
 
-  for(int i=0; i<=115; i++) 
+  for(int i=0; i<=110; i++) 
   {
     LeftMotorStep(),RightMotorStep();
     delayMicroseconds(DEFAULT_SPEED);
@@ -227,7 +227,7 @@ void Right()
   RightMotorDir = BACKWARD;
   LeftMotorDir = FORWARD;
 
-  for(int i=0; i<=115; i++) 
+  for(int i=0; i<=110; i++) 
   {
     LeftMotorStep(),RightMotorStep();
     delayMicroseconds(DEFAULT_SPEED);
@@ -375,7 +375,7 @@ void Return_Home()
     else i = 2; 
   }
 
-  int acs = (int) (numAngle[j][i]*4/3);
+  int acs = (int) (numAngle[j][i]*1.19);
   
   //각도 바꾸기
   RightMotorDir = BACKWARD;
@@ -414,11 +414,12 @@ void loop()
 { 
   if(SerialBT.available()) 
   {
-    Serial.println(SerialBT.read());
+    delay(1);
     RC_Move_Order = SerialBT.parseInt();
     RC_Car_Pos();
     distance();
     Return_Angle();
+    
     /*
     Serial.print("X_Pos : ");
     Serial.println(X_Pos);
