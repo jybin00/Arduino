@@ -47,8 +47,10 @@ int RC_Car_Dir = 1;     //차체의 방향 ( 앞 부분이 어디를 향하고 �
 int X_Pos = 0;    // x위치 저장용 변수
 int Y_Pos = 0;    // y위치 저장용 변수
 int Distance = 0; // 거리 저장용 변수
+int i,j = 0; // 돌아올 때 쓰이는 각도 인덱스
 float radian = 0; // 각 계산을 위한 변수
 float degree = 0;
+
 
 void Return_Home();
 
@@ -363,7 +365,8 @@ void Return_Home()
   };
   
   //각도 바꾸는 스텝 수
-  int i = 0; int j = RC_Car_Dir - 1;
+  i = 0; 
+  j = RC_Car_Dir - 1;
   if(X_Pos>=0) 
   {
     if(Y_Pos>=0) i = 0;
@@ -401,56 +404,57 @@ void Return_Home()
     delayMicroseconds(DEFAULT_SPEED);
   }
 
-      switch(i)
+  switch(i)
+    {
+    case 1 :
+      RightMotorDir = BACKWARD;
+      LeftMotorDir = FORWARD;
+    Serial.println(i);
+      for(int i=0; i<=(int) (degree-90)*1.19; i++) 
       {
-      case 1 :
-        RightMotorDir = BACKWARD;
-        LeftMotorDir = FORWARD;
-      
-        for(int i=0; i<=(int) (degree-90)*1.19; i++) 
-        {
-          LeftMotorStep();
-          RightMotorStep();
-          delayMicroseconds(DEFAULT_SPEED);
-        } 
-      break;
+        LeftMotorStep();
+        RightMotorStep();
+        delayMicroseconds(DEFAULT_SPEED);
+      } 
+    break;
 
-      case 2 :
-        RightMotorDir = FORWARD;
-        LeftMotorDir = BACKWARD;
-      
-        for(int i=0; i<=(int) (270-degree)*1.19; i++) 
-        {
-          LeftMotorStep();
-          RightMotorStep();
-          delayMicroseconds(DEFAULT_SPEED);
-        } 
-      break;
-      
-      case 3 :
-        RightMotorDir = BACKWARD;
-        LeftMotorDir = FORWARD;
-      
-        for(int i=0; i<=(int) (degree-270)*1.19; i++) 
-        {
-          LeftMotorStep();
-          RightMotorStep();
-          delayMicroseconds(DEFAULT_SPEED);
-        } 
-      break;
+    case 2 :
+      RightMotorDir = FORWARD;
+      LeftMotorDir = BACKWARD;
+    Serial.println(i);
+      for(int i=0; i<=(int) (270-degree)*1.19; i++) 
+      {
+        LeftMotorStep();
+        RightMotorStep();
+        delayMicroseconds(DEFAULT_SPEED);
+      } 
+    break;
+    
+    case 3 :
+      RightMotorDir = BACKWARD;
+      LeftMotorDir = FORWARD;
+    Serial.println(i);
+      for(int i=0; i<=(int) (degree-270)*1.19; i++) 
+      {
+        LeftMotorStep();
+        RightMotorStep();
+        delayMicroseconds(DEFAULT_SPEED);
+      } 
+    break;
 
-      case 4 :
-        RightMotorDir = FORWARD;
-        LeftMotorDir = BACKWARD;
-      
-        for(int i=0; i<=(int) (270-degree)*1.19; i++) 
-        {
-          LeftMotorStep();
-          RightMotorStep();
-          delayMicroseconds(DEFAULT_SPEED);
-        } 
-      break;
-      }
+    case 4 :
+      RightMotorDir = FORWARD;
+      LeftMotorDir = BACKWARD;
+    Serial.println(i);
+      for(int i=0; i<=(int) (270-degree)*1.19; i++) 
+      {
+        LeftMotorStep();
+        RightMotorStep();
+        delayMicroseconds(DEFAULT_SPEED);
+      } 
+    break;
+    }
+  delay(1);
   
   X_Pos = 0;
   Y_Pos = 0; 
