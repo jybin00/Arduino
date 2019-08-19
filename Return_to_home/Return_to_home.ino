@@ -20,8 +20,8 @@ BluetoothSerial SerialBT;
 SSD1306Wire display(0x3c, 21,22);  // 0x3c는 메모리 주소 // 21 == SDA 22 == SCL
 
 
-// 스피드 설정 0.004초 마다 1스텝씩 이동
-#define DEFAULT_SPEED 4000
+// 스피드 설정 0.0037초 마다 1스텝씩 이동
+#define DEFAULT_SPEED 3700
 
 // 모터 방향 설정
 #define FORWARD 1
