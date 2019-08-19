@@ -57,11 +57,11 @@ void Return_Home();
 void setup() 
 {
   // 시리얼 통신 시작 
-  Serial.begin(115200);
+  //Serial.begin(115200);
   
   //bluetooth
   SerialBT.begin("ESP32test"); //Bluetooth device name
-  Serial.println("The device started, now you can pair it with bluetooth!");
+  //Serial.println("The device started, now you can pair it with bluetooth!");
 
   // OLED 함수
   display.init(); // OLED 초기화
@@ -377,6 +377,7 @@ void Return_Home()
     if(Y_Pos>=0) i= 1; 
     else i = 2; 
   }
+  //Serial.println(i);
 
   int acs = (int) (numAngle[j][i]*1.19);
   
@@ -406,10 +407,9 @@ void Return_Home()
 
   switch(i)
     {
-    case 1 :
+    case 0 :
       RightMotorDir = BACKWARD;
       LeftMotorDir = FORWARD;
-    Serial.println(i);
       for(int i=0; i<=(int) (degree-90)*1.19; i++) 
       {
         LeftMotorStep();
@@ -421,7 +421,6 @@ void Return_Home()
     case 2 :
       RightMotorDir = FORWARD;
       LeftMotorDir = BACKWARD;
-    Serial.println(i);
       for(int i=0; i<=(int) (270-degree)*1.19; i++) 
       {
         LeftMotorStep();
@@ -433,7 +432,6 @@ void Return_Home()
     case 3 :
       RightMotorDir = BACKWARD;
       LeftMotorDir = FORWARD;
-    Serial.println(i);
       for(int i=0; i<=(int) (degree-270)*1.19; i++) 
       {
         LeftMotorStep();
@@ -442,10 +440,9 @@ void Return_Home()
       } 
     break;
 
-    case 4 :
+    case 1 :
       RightMotorDir = FORWARD;
       LeftMotorDir = BACKWARD;
-    Serial.println(i);
       for(int i=0; i<=(int) (270-degree)*1.19; i++) 
       {
         LeftMotorStep();
