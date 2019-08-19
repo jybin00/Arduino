@@ -401,6 +401,56 @@ void Return_Home()
     delayMicroseconds(DEFAULT_SPEED);
   }
 
+      switch(i)
+      {
+      case 1 :
+        RightMotorDir = BACKWARD;
+        LeftMotorDir = FORWARD;
+      
+        for(int i=0; i<=(int) (degree-90)*1.19; i++) 
+        {
+          LeftMotorStep();
+          RightMotorStep();
+          delayMicroseconds(DEFAULT_SPEED);
+        } 
+      break;
+
+      case 2 :
+        RightMotorDir = FORWARD;
+        LeftMotorDir = BACKWARD;
+      
+        for(int i=0; i<=(int) (270-degree)*1.19; i++) 
+        {
+          LeftMotorStep();
+          RightMotorStep();
+          delayMicroseconds(DEFAULT_SPEED);
+        } 
+      break;
+      
+      case 3 :
+        RightMotorDir = BACKWARD;
+        LeftMotorDir = FORWARD;
+      
+        for(int i=0; i<=(int) (degree-270)*1.19; i++) 
+        {
+          LeftMotorStep();
+          RightMotorStep();
+          delayMicroseconds(DEFAULT_SPEED);
+        } 
+      break;
+
+      case 4 :
+        RightMotorDir = FORWARD;
+        LeftMotorDir = BACKWARD;
+      
+        for(int i=0; i<=(int) (270-degree)*1.19; i++) 
+        {
+          LeftMotorStep();
+          RightMotorStep();
+          delayMicroseconds(DEFAULT_SPEED);
+        } 
+      break;
+      }
   
   X_Pos = 0;
   Y_Pos = 0; 
