@@ -410,7 +410,7 @@ void Return_Home()
     case 0 :
       RightMotorDir = BACKWARD;
       LeftMotorDir = FORWARD;
-      for(int i=0; i<=(int) (degree-90)*1.19; i++) 
+      for(int i=0; i<=(int) (degree+90)*1.19; i++) 
       {
         LeftMotorStep();
         RightMotorStep();
