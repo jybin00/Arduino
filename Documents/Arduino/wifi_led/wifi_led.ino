@@ -91,13 +91,13 @@ void loop() {
   client.print("<br>");
   client.print("<br>");
   
-  client.print("<a href='/ledon_b'>LED BLUE ON</a> &emsp;&emsp; ");
-  client.print("<a href='/ledoff_b'>LED BLUE OFF</a>  ");
+  client.print("<a href='/ledon_b'><button>LED BLUE ON</button></a> &emsp;&emsp; "); // 버튼 스타일 추
+  client.print("<a href='/ledoff_b'><button>LED BLUE OFF</button></a>  ");
   client.print("<br>");
   client.print("<br>");
   
-  client.print("<a href='/ledon_y'>LED YELLOW ON</a> &emsp; ");
-  client.print("<a href='/ledoff_y'>LED YELLOW OFF</a>  ");
+  client.print("<a href='/ledon_y'><button>LED YELLOW ON</button></a> &emsp; ");
+  client.print("<a href='/ledoff_y'><button>LED YELLOW OFF</button></a>  ");  // 버튼 스타일 추가
   client.print("<br>");
   
   client.print("<br>");
