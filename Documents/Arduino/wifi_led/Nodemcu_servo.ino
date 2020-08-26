@@ -5,10 +5,11 @@
  
 const char* ssid = "Up to the SKY";
 const char* password = "1402036768";
-const int[10] = '0'; // 서보 모터의 값을 저장하기 위한 배열
+const int servoPos_Value[10] = {0}; // 서보 모터의 값을 저장하기 위한 배열
  
 WiFiServer server(8080);
 Servo myServo;
+int POS = 0;
   
 void setup() {
 
@@ -51,11 +52,12 @@ void loop() {
 		int pos1 = request.indexOf('=');
 		int pos2 = request.indexOf('H');
 		String servoPos = request.substring(pos1+1, pos2-1);
- 
-		myServo.write(servoPos.toInt());
+ 		
+		POS = servoPos.toInt();
+		myServo.write(POS);
 	    myServo.attach(PIN_SERVO);
 	    Serial.print("ServoPos is ");
-		Serial.println(servoPos.toInt()); 
+		Serial.println(POS); 
 	    delay(600);
 	    myServo.detach();
 	}
@@ -71,6 +73,8 @@ void loop() {
 	client.print("<body>");
 	client.print("<h2>Servo Control Webpage</h2>");
 	client.print("Servo position : <span id=\"servoPos\">90</span>");
+	client.print("<br>");
+	client.print("POS");
 	client.print("<br>");
 	client.print("<input type=\"range\" min=\"0\" max=\"180\" id=\"servoSlider\" onchange=\"servoWrite(this.value)\"/>");
 	client.print("<script>");
