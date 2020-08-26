@@ -61,6 +61,8 @@ void loop() {
 	    delay(600);
 	    myServo.detach();
 	}
+	int k = 0;
+	k++;
 
     client.print("HTTP/1.1 200 OK");
     client.print("Content-Type: text/html\r\n\r\n");
@@ -74,7 +76,7 @@ void loop() {
 	client.print("<h2>Servo Control Webpage</h2>");
 	client.print("Servo position : <span id=\"servoPos\">90</span>");
 	client.print("<br>");
-	client.print(POS);
+	client.print(k);
 	client.print("<br>");
 	client.print("<br>");
 	client.print("<input type=\"range\" min=\"0\" max=\"180\" id=\"servoSlider\" onchange=\"servoWrite(this.value)\"/>");
