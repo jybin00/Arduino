@@ -5,6 +5,7 @@
  
 const char* ssid = "Up to the SKY";
 const char* password = "1402036768";
+const int[10] = '0'; // 서보 모터의 값을 저장하기 위한 배열
  
 WiFiServer server(8080);
 Servo myServo;
