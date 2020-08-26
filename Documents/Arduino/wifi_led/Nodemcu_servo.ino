@@ -46,26 +46,22 @@ void loop() {
 	Serial.println("request: ");
 	Serial.println(request);
  
-//	while(client.available()) {
-//    Serial.println(client.read());
-//    Serial.println("hello");
-//	}
  
 	if(request.indexOf("/pos=") >= 0) {
-    Serial.println("shit");
 		int pos1 = request.indexOf('=');
 		int pos2 = request.indexOf('H');
 		String servoPos = request.substring(pos1+1, pos2-1);
  
 		myServo.write(servoPos.toInt());
-    myServo.attach(PIN_SERVO);
-    Serial.print("ServoPos is ");
+	    myServo.attach(PIN_SERVO);
+	    Serial.print("ServoPos is ");
 		Serial.println(servoPos.toInt()); 
-    delay(600);
-    myServo.detach();
+	    delay(600);
+	    myServo.detach();
 	}
-  client.print("HTTP/1.1 200 OK");
-  client.print("Content-Type: text/html\r\n\r\n");
+
+    client.print("HTTP/1.1 200 OK");
+    client.print("Content-Type: text/html\r\n\r\n");
 	client.print("<!DOCTYPE HTML>");
 	client.print("<html>");
 	client.print("<head>");
