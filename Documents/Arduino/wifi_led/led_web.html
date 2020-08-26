@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<head> 
+  <meta&nbspcharset=\UTF-8\>
+  <title>LED Control Webpage</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+  <h2>LED Control Webpage</h2>
+  <a href='/ledon_r'><button>LED RED ON</button></a> &emsp&emsp&emsp
+  <a href='/ledoff_r'><button>LED RED OFF</button></a>  
+  <br>
+  <br>
+
+  <a href='/ledon_b'><button>LED BLUE ON</button></a> &emsp&emsp  // 버튼 스타일 추
+  <a href='/ledoff_b'><button>LED BLUE OFF</button></a>  
+  <br>
+  <br>
+
+  <a href='/ledon_y'><button>LED YELLOW ON</button></a> &emsp 
+  <a href='/ledoff_y'><button>LED YELLOW OFF</button></a>    // 버튼 스타일 추가
+  <br><br>
+
+  <form>
+    <label for="slider">Slider:</label>
+    <input name="slider" id="slider" type="range" min="0" max="100" value="50">
+    <label for="slider-fill">Slider with fill and step of 50:</label>
+    <input name="slider-fill" id="slider-fill" type="range" min="0" max="1000" step="50" value="60" data-highlight="true">
+  </form>
+
+  <div class="Container" >
+    <font size = 2 id = "slider_value_view">0</font>              
+    <input style = "width:50%;" class="slider_range" type="range" value="0" min="0" max="1000"></input>             
+  </div>
+
+
+  <script language = "javascript">
+
+    function ShowSliderValue(sVal)
+    {
+      var obValueView = document.getElementById("slider_value_view");
+      obValueView.innerHTML = sVal
+    }
+
+    var RangeSlider = function(){
+      var range = $('.slider_range');
+
+      range.on('input', function(){   
+        ShowSliderValue(this.value);
+      });
+    };
+
+    RangeSlider();
+
+
+  </script>
+
+  <br>
+  <br>
+  LED Status RED : 
+  digitalReadPIN_LED_RED ? ON : OFF
+  <br>
+  <br>
+  LED Status BLUE : 
+  digitalReadPIN_LED_BLUE ? ON : OFF
+  <br>
+  <br>
+  LED Status YELLOW : 
+  digitalReadPIN_LED_YELLOW ? ON : OFF
+</body>
+</html>
