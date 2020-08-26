@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<h2>Servo Control Webpage</h2>
+	Servo position : <span id="servoPosText">90</span>
+	<br>
+	<input type="range" min="0" max="180" id="servoSlider" onchange="servoWrite(this.value)">
+	<script>
+		var slider = document.getElementById("servoSlider");
+		var servoPos = document.getElementById("servoPosText");
+		slider.oninput = function() { 
+			slider.value = this.value;
+			servoPos.innerHTML = this.value;
+		}
+		$.ajaxSetup({timeout:1000});
+		function servoWrite(pos) {
+			$.get("/pos=" + pos + "d");
+			{Connection: close};
+		}
+	</script>
+</body>
+</html>

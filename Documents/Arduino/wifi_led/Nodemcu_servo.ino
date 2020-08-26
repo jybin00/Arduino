@@ -3,8 +3,8 @@
  
 #define PIN_SERVO D0
  
-const char* ssid = "Wi-Fi 아이디";
-const char* password = "Wi-Fi 패스워드";
+const char* ssid = "Up to the SKY;
+const char* password = "1402036768";
  
 WiFiServer server(80);
 Servo myServo;
