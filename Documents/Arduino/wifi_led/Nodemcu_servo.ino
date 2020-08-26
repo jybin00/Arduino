@@ -74,7 +74,8 @@ void loop() {
 	client.print("<h2>Servo Control Webpage</h2>");
 	client.print("Servo position : <span id=\"servoPos\">90</span>");
 	client.print("<br>");
-	client.print("POS");
+	client.print(POS);
+	client.print("<br>");
 	client.print("<br>");
 	client.print("<input type=\"range\" min=\"0\" max=\"180\" id=\"servoSlider\" onchange=\"servoWrite(this.value)\"/>");
 	client.print("<script>");
