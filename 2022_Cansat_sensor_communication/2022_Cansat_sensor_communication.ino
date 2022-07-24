@@ -1,9 +1,11 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+// oled libraries
+#include "SSD1306Wire.h"
+// BMP390 libraries
 #include <Adafruit_Sensor.h>
 #include "Adafruit_BMP3XX.h"
+// GPS libraries
 #include "TinyGPSPlus.h"
 #include <SoftwareSerial.h>
 
