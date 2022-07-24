@@ -16,21 +16,14 @@ SoftwareSerial ss(13, 15);
 // Initialize the OLED display using Wire library
 SSD1306Wire  display(0x3c, D3, D5);
 
-OLEDDisplayUi ui ( &display );
-
-int screenW = 128;
-int screenH = 64;
-int clockCenterX = screenW/2;
-int clockCenterY = ((screenH-16)/2)+16;   // top yellow part is 16 px height
-int clockRadius = 23;
-
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 Adafruit_BMP3XX bmp;
 
 void setup() {
   Serial.begin(115200);
-  Wire.begin();
+  display.init();
+
   if (!bmp.begin_I2C()) {   // hardware I2C mode, can pass in address & alt Wire
     Serial.println(F("Could not find a valid BMP3 sensor, check wiring!"));
     while (1);
