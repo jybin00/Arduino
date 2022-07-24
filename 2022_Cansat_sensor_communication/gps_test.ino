@@ -13,8 +13,8 @@ TinyGPSPlus gps;
 // The serial connection to the GPS device RX, TX
 SoftwareSerial ss(13, 15);
 
-// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
-Adafruit_SSD1306 display(128, 64, &Wire, 5);
+// Initialize the OLED display using Wire library
+SSD1306Wire  display(0x3c, D3, D5);
 
 
 #define SEALEVELPRESSURE_HPA (1013.25)
