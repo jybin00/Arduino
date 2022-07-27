@@ -107,7 +107,7 @@ void loop() {
   if (mpu.available()) {
     mpu.update();
     static uint32_t prev_ms = millis();
-    if (millis() > prev_ms + 20) {
+    if (millis() > prev_ms + 15) {
         print_roll_pitch_yaw();
         prev_ms = millis();
       }
@@ -131,32 +131,7 @@ void loop() {
       displayInfo();
     }
   }
-
-  display.setCursor(0, 0);
-  display.print("T:" + String(temp) + "*C"); 
-  display.setCursor(64, 0);
-  display.println("H:" + String(humi) + "%");
-  display.setCursor(0, 10);
-  display.println("P:" + String(pressure) + " hPa"); 
-  display.setCursor(0, 20);
-  display.println("Alti:" + String(alti) + " m");
-
-  display.setCursor(0,30);
-  display.print(F("Location: "));
-  
-  display.print(latitude, 6);
-  display.println(F(","));
-  display.setCursor(0,40);
-  display.print(longitude, 6);
-  
-  display.setCursor(0,50);
-  display.print(gps.date.month());
-  display.print(F("/"));
-  display.print(gps.date.day());
-  display.print(F("/"));
-  display.print(gps.date.year());
-  
-  display.display();
+ 
  
 }
 
