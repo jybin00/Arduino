@@ -9,7 +9,7 @@ const byte address[6] = "99074"; // 송신기와 수신기가 동일한 값으�
 typedef struct CANSAT_Info
 {
   float latitude, longitude;
-  short altitude;
+  short altitudee;
   short Roll, Pitch, Yaw;
   short humidity, temperature;
 }Info;
@@ -52,8 +52,6 @@ void setup() {
   radio.setDataRate(RF24_250KBPS);
   radio.setChannel(14);
   radio.setPALevel(RF24_PA_MIN); // 송신거리에 따른, 전원공급 파워레벨 설정
-
-  radio.stopListening();  // 모듈을 송신기로 설정
   Serial.println(F("RF module setting end!"));
   
   /*
@@ -97,18 +95,23 @@ void setup() {
   Serial.println(F("dht begin."));
 
   mpu.setFilterIterations(10);
+  radio.stopListening();  // 모듈을 송신기로 설정
 }
 
 void loop() {
-  //display.clearDisplay();
   Info info;
   bmp.performReading();
   
-  if (mpu.available()) {
-    mpu.update();
+  if (mpu.update()) {
     static uint32_t prev_ms = millis();
-    if (millis() > prev_ms + 15) {
-        print_roll_pitch_yaw();
+    if (millis() > prev_ms + 10) {
+        short roll = mpu.getRoll()*100;
+        short yaw = mpu.getYaw()*100;
+        short pitch = mpu.getPitch()*100;
+        info.Roll = roll;
+        info.Yaw = yaw;
+        info.Pitch = pitch;
+        Serial.println(roll);
         prev_ms = millis();
       }
   }
@@ -117,8 +120,7 @@ void loop() {
     static uint32_t prev_ms = millis();
     if (millis() > prev_ms + 2005) {
       info.temperature = bmp.temperature;
-      //pressure = bmp.pressure/100;
-      info.altitude = bmp.readAltitude(SEALEVELPRESSURE_HPA);
+      info.altitudee = bmp.readAltitude(SEALEVELPRESSURE_HPA);
       info.humidity = dht.readHumidity();
       prev_ms = millis();
       }
@@ -127,29 +129,16 @@ void loop() {
   // This sketch displays information every time a new sentence is correctly encoded.
   while (Serial3.available() > 0){
     if (gps.encode(Serial3.read())){
-      displayInfo();
+      if (gps.location.isValid())
+      {
+        info.latitude = gps.location.lat();
+        info.longitude = gps.location.lng();
+      }
     }
   }
-  radio.write(info);
- 
- 
-}
-
-void displayInfo()
-{
-  if (gps.location.isValid())
-  {
-    latitude = gps.location.lat();
-    longitude = gps.location.lng();
+  bool report = radio.write(&info, sizeof(Info));
+  if(report){
+    Serial.println(F("Transmission successful!"));
   }
-}
-
-void print_roll_pitch_yaw() {
-    info.Roll = short mpu.getRoll() * 100;
-    info.Pitch = short mpu.getPitch() * 100;
-    info.Yaw = short mpu.getYaw() * 100;
-    Serial.print(mpu.getPitch(), 2);
-
-    Serial.print(", ");
-    Serial.println(mpu.getRoll(), 2);
+ 
 }
