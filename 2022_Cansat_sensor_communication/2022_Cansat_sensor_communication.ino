@@ -8,8 +8,8 @@ const byte address[6] = "99074"; // 송신기와 수신기가 동일한 값으�
 
 typedef struct CANSAT_Info
 {
-  float altitude, longitude;
-  short height;
+  float latitude, longitude;
+  short altitude;
   short Roll, Pitch, Yaw;
   short humidity, temperature;
 }Info;
@@ -116,21 +116,21 @@ void loop() {
   if (bmp.temperature) {
     static uint32_t prev_ms = millis();
     if (millis() > prev_ms + 2005) {
-      temp = bmp.temperature;
-      pressure = bmp.pressure/100;
-      alti = bmp.readAltitude(SEALEVELPRESSURE_HPA);
-      humi = dht.readHumidity();
+      info.temperature = bmp.temperature;
+      //pressure = bmp.pressure/100;
+      info.altitude = bmp.readAltitude(SEALEVELPRESSURE_HPA);
+      info.humidity = dht.readHumidity();
       prev_ms = millis();
       }
   }  
 
-  
   // This sketch displays information every time a new sentence is correctly encoded.
   while (Serial3.available() > 0){
     if (gps.encode(Serial3.read())){
       displayInfo();
     }
   }
+  radio.write(info);
  
  
 }
@@ -142,19 +142,14 @@ void displayInfo()
     latitude = gps.location.lat();
     longitude = gps.location.lng();
   }
-  if (gps.date.isValid())
-  {
-    month1 = gps.date.month();
-    day1 = gps.date.day();
-    year1 = gps.date.year();
-  }
 }
 
 void print_roll_pitch_yaw() {
-    Serial.print("Yaw, Pitch, Roll: ");
-    Serial.print(mpu.getYaw(), 2);
-    Serial.print(", ");
+    info.Roll = short mpu.getRoll() * 100;
+    info.Pitch = short mpu.getPitch() * 100;
+    info.Yaw = short mpu.getYaw() * 100;
     Serial.print(mpu.getPitch(), 2);
+
     Serial.print(", ");
     Serial.println(mpu.getRoll(), 2);
 }
