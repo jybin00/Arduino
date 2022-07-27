@@ -1,16 +1,18 @@
 #include <SPI.h>
 #include <Wire.h>
 
-/*
-// oled libraries //
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-*/
+#include <RF24.h>
+RF24 radio(49, 48); // SPI통신을 위한 (CE, CSN) 핀 선언
 
-// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, 4);
+const byte address[6] = "99074"; // 송신기와 수신기가 동일한 값으로 주소 설정함(5자리)
+
+typedef struct CANSAT_Info
+{
+  float altitude, longitude;
+  short height;
+  short Roll, Pitch, Yaw;
+  short humidity, temperature;
+}Info;
 
 // BMP390 libraries
 #include <Adafruit_Sensor.h>
@@ -28,14 +30,8 @@ DHT dht(DHTPIN, DHTTYPE);
 // MPU9250
 #include "MPU9250.h"
 MPU9250 mpu;
-uint8_t device_count = 0;
-uint8_t addrs[7] = {0};
 
 static const uint32_t GPSBaud = 9600;
-
-float temp, humi, pressure, alti;
-float longitude, latitude;
-int day1, month1, year1;
 
 // The TinyGPSPlus object
 TinyGPSPlus gps;
@@ -47,15 +43,26 @@ Adafruit_BMP3XX bmp;
 void setup() {
   Serial.begin(115200);
   Wire.begin();
-  Wire.setClock(100000);
   while (!Serial);
   Serial.println(F("2022_Cansat_sensor_communication test"));
+
+  Serial.println(F("RF module setting...."));
+  radio.begin();
+  radio.openWritingPipe(address); // 데이터를 보낼 수신 주소를 설정
+  radio.setDataRate(RF24_250KBPS);
+  radio.setChannel(14);
+  radio.setPALevel(RF24_PA_MIN); // 송신거리에 따른, 전원공급 파워레벨 설정
+
+  radio.stopListening();  // 모듈을 송신기로 설정
+  Serial.println(F("RF module setting end!"));
   
+  /*
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
   }
   Serial.println(F("Oled found."));
+  */
 
   if (!bmp.begin_I2C()) {   // hardware I2C mode, can pass in address & alt Wire
   //if (! bmp.begin_SPI(BMP_CS)) {  // hardware SPI mode  
@@ -88,16 +95,13 @@ void setup() {
 
   dht.begin();
   Serial.println(F("dht begin."));
-  display.clearDisplay();
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
   mpu.setFilterIterations(10);
 }
 
 void loop() {
-  display.clearDisplay();
+  //display.clearDisplay();
+  Info info;
   bmp.performReading();
   
   if (mpu.available()) {
@@ -115,7 +119,7 @@ void loop() {
       temp = bmp.temperature;
       pressure = bmp.pressure/100;
       alti = bmp.readAltitude(SEALEVELPRESSURE_HPA);
-      //humi = dht.readHumidity();
+      humi = dht.readHumidity();
       prev_ms = millis();
       }
   }  
