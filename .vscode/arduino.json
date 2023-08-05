@@ -1,6 +1,0 @@
-{
-    "board": "arduino:avr:uno",
-    "port": "/dev/tty.usbmodem1301",
-    "sketch": "MPU_test/MPU_test.ino",
-    "programmer": "avrispmkii"
-}
